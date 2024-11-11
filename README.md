@@ -1,11 +1,13 @@
 ```
-Team:		WedjatEye
+Team:	WedjatEye
 Author:     ChengyuYang and Jiahua Zhao
 Start Date: 30-Oct-2024
 Commit Date: 10-Nov-2024
 ```
 # Introduce 
-    This project implements the SRCNN (Super-Resolution Convolutional Neural Network) model for image super-resolution. The SRCNN model is a deep learning-based approach that enhances low-resolution images by generating high-resolution outputs. This project is developed using PyTorch and utilizes the DIV2K dataset for training and evaluation.
+    This project implements the SRCNN (Super-Resolution Convolutional Neural Network) model for image super-resolution. 
+    The SRCNN model is a deep learning-based approach that enhances low-resolution images by generating high-resolution outputs. 
+    This project is developed using PyTorch and utilizes the DIV2K dataset for training and evaluation.
 
 # Need to modify
     The effect of super resolution is not ideal, and further modification of SRCNN model is needed.
