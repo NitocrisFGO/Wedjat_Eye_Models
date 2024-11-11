@@ -1,29 +1,34 @@
 """
 train.py
 
-用于训练SRCNN（Super-Resolution Convolutional Neural Network）模型的脚本。
-该脚本使用DIV2K数据集的低分辨率和高分辨率图像对，通过监督学习方式训练模型，以提升图像的分辨率。
+Script for training the SRCNN (Super-Resolution Convolutional Neural Network) model.
+This script uses paired low-resolution and high-resolution images from the DIV2K dataset
+to train the model through supervised learning, enhancing image resolution.
+Note: Download the dataset from the DIV2K website (https://data.vision.ee.ethz.ch/cvl/DIV2K/)
+      Need to download: Train Data Track 1 bicubic downscaling x4 (LR images)
+                        Validation Data Track 1 bicubic downscaling x4 (LR images)
+                        Train Data (HR images)
 
-依赖项:
+Dependencies:
 - torch
 - torchvision
 - os
-- models.srcnn (SRCNN模型定义)
-- utils.SuperResolutionDataset (自定义的数据集加载类)
+- models.srcnn (SRCNN model definition)
+- utils.SuperResolutionDataset (custom dataset loader class)
 
-输入:
-- 低分辨率图像路径: "DIV2K/DIV2K_train_LR_bicubic/X4"
-- 高分辨率图像路径: "DIV2K/DIV2K_train_HR"
+Input:
+- Low-resolution image path: "DIV2K/DIV2K_train_LR_bicubic/X4"
+- High-resolution image path: "DIV2K/DIV2K_train_HR"
 
-输出:
-- 训练好的模型权重文件, 默认保存路径为 "trained_models/srcnn_div2k.pth"
+Output:
+- Trained model weights file, saved by default to "trained_models/srcnn_div2k.pth"
 
-使用方式:
-- 直接运行该文件以启动模型训练:
+Usage:
+- Run this file directly to start model training:
     python train.py
 
-作者: [Chengyu Yang] and [Jiahua Zhao]
-日期: [2024/11/10]
+Authors: [Chengyu Yang and Jiahua Zhao]
+Date: [2024/11/10]
 """
 
 import os
@@ -37,12 +42,12 @@ from utils import SuperResolutionDataset
 import torchvision.transforms as transforms
 
 
-# 训练函数
+# # Training function
 def train_model(model, train_loader, num_epochs=20, learning_rate=1e-4, save_path="trained_models/srcnn_div2k.pth"):
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-    # 创建保存目录（若不存在）
+    # Create a save directory (if it does not exist)
     save_dir = os.path.dirname(save_path)
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
@@ -64,13 +69,14 @@ def train_model(model, train_loader, num_epochs=20, learning_rate=1e-4, save_pat
         print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss / len(train_loader):.4f}")
     print("Training complete")
 
-    # 保存模型权重
+    # Save model weights
     torch.save(model.state_dict(), save_path)
     print(f"Training complete. Model saved to {save_path}")
 
 
 if __name__ == '__main__':
-    # 配置数据加载器和模型
+
+    # Configure the data loader and model
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     transform = transforms.ToTensor()
     train_dataset = SuperResolutionDataset("DIV2K/DIV2K_train_LR_bicubic/X4", "DIV2K/DIV2K_train_HR",

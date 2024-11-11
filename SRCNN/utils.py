@@ -1,30 +1,31 @@
 """
 utils.py
 
-定义超分辨率数据集加载类 SuperResolutionDataset，用于加载低分辨率和高分辨率图像对，支持RGB图像的读取和中心裁剪。
-该数据集类通常用于图像超分辨率任务，将图像对转换为张量并返回给数据加载器。
+Defines the SuperResolutionDataset class for loading paired low-resolution and high-resolution images,
+supporting RGB image reading and center cropping. This dataset class is typically used for image
+super-resolution tasks, converting image pairs to tensors and returning them for the data loader.
 
-依赖项:
-- os: 文件和路径管理
-- PIL (Python Imaging Library): 图像加载和处理
-- torch.utils.data.Dataset: PyTorch数据集基类
-- torchvision.transforms: 图像转换工具
+Dependencies:
+- os: For file and path management
+- PIL (Python Imaging Library): For image loading and processing
+- torch.utils.data.Dataset: PyTorch dataset base class
+- torchvision.transforms: For image transformations
 
-输入:
-- low_res_dir: 低分辨率图像的文件夹路径
-- high_res_dir: 高分辨率图像的文件夹路径
-- transform: 可选的图像转换（例如 ToTensor）
-- crop_size: 图像裁剪大小，默认为 256
+Inputs:
+- low_res_dir: Directory path for low-resolution images
+- high_res_dir: Directory path for high-resolution images
+- transform: Optional image transformation (e.g., ToTensor)
+- crop_size: Size for center cropping, default is 256
 
-使用方式:
-- 初始化 SuperResolutionDataset 类，并传入低分辨率和高分辨率图像文件夹路径：
+Usage:
+- Initialize the SuperResolutionDataset class with paths for low-resolution and high-resolution images:
     dataset = SuperResolutionDataset("path/to/low_res_images", "path/to/high_res_images", transform=transforms.ToTensor(), crop_size=256)
 
-- 使用 DataLoader 加载数据集：
+- Use DataLoader to load the dataset:
     dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
 
-作者: [你的名字]
-日期: [日期]
+Authors: [Chengyu Yang and Jiahua Zhao]
+Date: [2024/11/10]
 """
 
 import os
@@ -38,7 +39,7 @@ class SuperResolutionDataset(Dataset):
         self.low_res_dir = low_res_dir
         self.high_res_dir = high_res_dir
         self.transform = transform
-        self.crop_size = crop_size  # 设置裁剪的尺寸
+        self.crop_size = crop_size  # Set the size of the crop
         self.low_res_images = sorted(os.listdir(low_res_dir))
         self.high_res_images = sorted(os.listdir(high_res_dir))
 
@@ -49,10 +50,10 @@ class SuperResolutionDataset(Dataset):
         low_res_path = os.path.join(self.low_res_dir, self.low_res_images[idx])
         high_res_path = os.path.join(self.high_res_dir, self.high_res_images[idx])
 
-        low_res_image = Image.open(low_res_path).convert("RGB")  # 使用 RGB 模式
-        high_res_image = Image.open(high_res_path).convert("RGB")  # 使用 RGB 模式
+        low_res_image = Image.open(low_res_path).convert("RGB")  # Use RGB
+        high_res_image = Image.open(high_res_path).convert("RGB")  # Use RGB
 
-        # 统一裁剪为相同大小
+        # Uniform cropping to the same size
         crop = transforms.CenterCrop(self.crop_size)
         low_res_image = crop(low_res_image)
         high_res_image = crop(high_res_image)
