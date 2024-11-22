@@ -28,16 +28,22 @@ class SRCNN(nn.Module):
     def __init__(self):
         super(SRCNN, self).__init__()
 
-        # Input channel changed from 1 to 3
         self.conv1 = nn.Conv2d(3, 64, kernel_size=9, padding=4)
-        self.conv2 = nn.Conv2d(64, 32, kernel_size=5, padding=2)
+        self.conv2 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(64, 32, kernel_size=3, padding=1)
+        self.conv4 = nn.Conv2d(32, 3, kernel_size=5, padding=2)
 
-        # Output channel changed from 1 to 3
-        self.conv3 = nn.Conv2d(32, 3, kernel_size=5, padding=2)
         self.relu = nn.ReLU(inplace=True)
+
+        # use prelu activation function
+        self.prelu = nn.PReLU()
+
+        # Add residual to enhance detail recovery
+        self.residual = nn.Conv2d(3, 3, kernel_size=1, padding=0)
 
     def forward(self, x):
         x = self.relu(self.conv1(x))
         x = self.relu(self.conv2(x))
-        x = self.conv3(x)
-        return x
+        x = self.relu(self.conv3(x))
+        x = self.conv4(x)
+        return x + residual
